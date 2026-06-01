@@ -1,337 +1,410 @@
 import { useState } from "react";
 import Icon from "@/components/ui/icon";
-import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 
-const HERO_IMAGE = "https://cdn.poehali.dev/projects/df67693e-6768-4f35-bbdf-2f2055631d56/files/fb58d43c-b1e6-4b1e-9ba2-e47f7fcdddc2.jpg";
+/* ── Images ── */
+const IMG_HERO    = "https://cdn.poehali.dev/projects/df67693e-6768-4f35-bbdf-2f2055631d56/files/affc8d40-49a0-4672-b983-ea96c2440d4d.jpg";
+const IMG_LIBRARY = "https://cdn.poehali.dev/projects/df67693e-6768-4f35-bbdf-2f2055631d56/files/56fa914f-c6fb-47e0-8541-5518c62bf692.jpg";
 
-const NAV_LINKS = [
-  { label: "Лента", icon: "LayoutDashboard" },
-  { label: "Группы", icon: "Users" },
-  { label: "События", icon: "CalendarDays" },
-  { label: "Вакансии", icon: "Briefcase" },
-  { label: "О платформе", icon: "Info" },
-];
+/* ── Data ── */
+const NAV_LINKS = ["Лента", "Группы", "События", "Стажировки", "Выпускники", "О платформе"];
 
-const STATS = [
-  { value: "12 400+", label: "Студентов", icon: "GraduationCap" },
-  { value: "890+", label: "Преподавателей", icon: "BookOpen" },
-  { value: "3 200+", label: "Выпускников", icon: "Award" },
-  { value: "540+", label: "Групп", icon: "Users" },
-];
-
-const GROUPS = [
-  { name: "Кафедра автоматики", members: 312, tag: "Специальность", color: "badge-blue", emoji: "⚙️" },
-  { name: "Карьера в IT", members: 204, tag: "Интересы", color: "badge-orange", emoji: "💻" },
-  { name: "Проект SmartCampus", members: 87, tag: "Проект", color: "badge-blue", emoji: "🚀" },
-  { name: "Математика & ИИ", members: 178, tag: "Специальность", color: "badge-blue", emoji: "🧮" },
-  { name: "Клуб стартапов", members: 143, tag: "Интересы", color: "badge-orange", emoji: "💡" },
-  { name: "Дорожные технологии", members: 95, tag: "Проект", color: "badge-orange", emoji: "🛣️" },
+const NEWS = [
+  {
+    tag: "Событие",
+    tagType: "orange",
+    date: "01 июня 2026",
+    title: "День карьеры — 2026: встреча студентов с работодателями",
+    img: IMG_LIBRARY,
+    views: 412,
+  },
+  {
+    tag: "Вакансия",
+    tagType: "blue",
+    date: "31 мая 2026",
+    title: "ТехноДорог открыл стажировки для студентов 4–5 курса",
+    img: "",
+    views: 287,
+  },
+  {
+    tag: "Проект",
+    tagType: "blue",
+    date: "30 мая 2026",
+    title: "Команда SmartCampus ищет разработчика и аналитика данных",
+    img: "",
+    views: 193,
+  },
+  {
+    tag: "Учёба",
+    tagType: "gray",
+    date: "29 мая 2026",
+    title: "Проф. Мальцев опубликовал обновлённые конспекты по транспортным системам",
+    img: "",
+    views: 341,
+  },
+  {
+    tag: "Вебинар",
+    tagType: "orange",
+    date: "28 мая 2026",
+    title: "Вебинар «Машинное обучение в дорожной отрасли» — запись доступна",
+    img: "",
+    views: 519,
+  },
+  {
+    tag: "Сообщество",
+    tagType: "gray",
+    date: "27 мая 2026",
+    title: "Клуб стартапов приглашает на питч-сессию 12 июня",
+    img: "",
+    views: 156,
+  },
 ];
 
 const EVENTS = [
-  {
-    title: "День карьеры — 2026",
-    date: "15 июня",
-    time: "10:00",
-    type: "Офлайн",
-    place: "Главный корпус, ауд. 201",
-    icon: "Briefcase",
-    color: "bg-brand-orange",
-  },
-  {
-    title: "Вебинар: Машинное обучение в транспорте",
-    date: "18 июня",
-    time: "18:30",
-    type: "Онлайн",
-    place: "Zoom",
-    icon: "Monitor",
-    color: "bg-brand-sky",
-  },
-  {
-    title: "Встреча выпускников 2016–2020",
-    date: "22 июня",
-    time: "16:00",
-    type: "Офлайн",
-    place: "Актовый зал",
-    icon: "Users",
-    color: "bg-brand-blue-mid",
-  },
-  {
-    title: "Хакатон «Умный город»",
-    date: "28–29 июня",
-    time: "09:00",
-    type: "Гибрид",
-    place: "Лаборатория 305",
-    icon: "Zap",
-    color: "bg-brand-orange",
-  },
+  { day: "15", month: "ИЮН", title: "День карьеры — 2026", place: "Главный корпус, ауд. 201", type: "Офлайн" },
+  { day: "18", month: "ИЮН", title: "Вебинар: ML в транспорте", place: "Онлайн / Zoom", type: "Онлайн" },
+  { day: "22", month: "ИЮН", title: "Встреча выпускников 2016–2020", place: "Актовый зал", type: "Офлайн" },
+  { day: "28", month: "ИЮН", title: "Хакатон «Умный город»", place: "Лаборатория 305", type: "Гибрид" },
+  { day: "05", month: "ИЮЛ", title: "Летняя научная конференция", place: "Конференц-зал A", type: "Гибрид" },
 ];
 
-const FEED = [
-  {
-    name: "Анна Соколова",
-    role: "Студентка, 3 курс",
-    avatar: "АС",
-    time: "2 ч назад",
-    text: "Ребята, кто уже зарегистрировался на хакатон «Умный город»? Ищу команду — есть опыт в Python и анализе данных 🙌",
-    likes: 14,
-    comments: 7,
-    tag: "Проекты",
-  },
-  {
-    name: "Проф. Игорь Мальцев",
-    role: "Преподаватель",
-    avatar: "ИМ",
-    time: "5 ч назад",
-    text: "Опубликовал новые материалы по курсу «Транспортные системы». Смотрите в разделе кафедры, конспект дополнен примерами из практики.",
-    likes: 31,
-    comments: 4,
-    tag: "Учёба",
-  },
-  {
-    name: "Дмитрий Ларин",
-    role: "Выпускник 2019",
-    avatar: "ДЛ",
-    time: "вчера",
-    text: "Компания ТехноДорог открыла 2 стажировки для студентов 4–5 курса по направлению «Автоматика». Отправил описание в раздел вакансий!",
-    likes: 58,
-    comments: 12,
-    tag: "Вакансии",
-  },
+const GROUPS = [
+  { name: "Кафедра автоматики и управления", members: 312, tag: "Специальность" },
+  { name: "Карьера в IT", members: 204, tag: "Интересы" },
+  { name: "Проект SmartCampus", members: 87, tag: "Проект" },
+  { name: "Математика и искусственный интеллект", members: 178, tag: "Специальность" },
+  { name: "Клуб студенческих стартапов", members: 143, tag: "Интересы" },
+  { name: "Дорожные технологии будущего", members: 95, tag: "Проект" },
 ];
 
 const VACANCIES = [
-  { title: "Стажёр-аналитик", company: "ТехноДорог", type: "Стажировка", salary: "от 35 000 ₽", tags: ["Python", "Excel"] },
-  { title: "Инженер САПР", company: "ГосПроект", type: "Работа", salary: "от 85 000 ₽", tags: ["AutoCAD", "Civil 3D"] },
-  { title: "Младший разработчик", company: "SmartTransit", type: "Стажировка", salary: "от 45 000 ₽", tags: ["React", "TypeScript"] },
+  { title: "Стажёр-аналитик данных", company: "ТехноДорог", salary: "от 35 000 ₽", type: "Стажировка", tags: ["Python", "Excel"] },
+  { title: "Инженер САПР", company: "ГосПроект", salary: "от 85 000 ₽", type: "Полная занятость", tags: ["AutoCAD", "Civil 3D"] },
+  { title: "Младший разработчик ПО", company: "SmartTransit", salary: "от 45 000 ₽", type: "Стажировка", tags: ["React", "TypeScript"] },
+  { title: "Технолог транспортных систем", company: "Росавтодор", salary: "от 70 000 ₽", type: "Полная занятость", tags: ["ПДД", "ГИС"] },
 ];
 
 const PEOPLE = [
-  { name: "Мария Ким", role: "Студентка, 4 курс", skills: ["UX", "Figma"], avatar: "МК" },
-  { name: "Артём Власов", role: "Аспирант", skills: ["ML", "Python"], avatar: "АВ" },
-  { name: "Екатерина Рубцова", role: "Преподаватель", skills: ["Математика", "MATLAB"], avatar: "ЕР" },
-  { name: "Олег Никитин", role: "Выпускник", skills: ["Управление", "Agile"], avatar: "ОН" },
+  { name: "Мария Ким", role: "Студентка, 4 курс · ИТ-специальность", skills: ["UX", "Figma", "React"], avatar: "МК" },
+  { name: "Артём Власов", role: "Аспирант · Кафедра математики", skills: ["ML", "Python", "NumPy"], avatar: "АВ" },
+  { name: "Екатерина Рубцова", role: "Доцент · Кафедра транспорта", skills: ["MATLAB", "Моделирование"], avatar: "ЕР" },
+  { name: "Олег Никитин", role: "Выпускник 2019 · Директор продукта", skills: ["Agile", "Стратегия"], avatar: "ОН" },
 ];
 
+const STATS = [
+  { value: "12 400", label: "студентов" },
+  { value: "890", label: "преподавателей" },
+  { value: "3 200", label: "выпускников" },
+  { value: "540", label: "сообществ" },
+];
+
+const TICKER_ITEMS = [
+  "День карьеры — 15 июня",
+  "Хакатон «Умный город» — 28–29 июня",
+  "Вебинар по ML — 18 июня 18:30",
+  "Встреча выпускников — 22 июня",
+  "Новые стажировки от ТехноДорог",
+  "Летняя конференция — 5 июля",
+];
+
+/* ── Helpers ── */
+function TagBadge({ type, label }: { type: string; label: string }) {
+  const cls =
+    type === "orange" ? "madi-tag-orange" :
+    type === "blue"   ? "madi-tag-blue"   : "madi-tag-gray";
+  return <span className={cls}>{label}</span>;
+}
+
+/* ── Component ── */
 export default function Index() {
   const [activeNav, setActiveNav] = useState("Лента");
-  const [searchValue, setSearchValue] = useState("");
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-brand-gray font-golos">
-      {/* ─── HEADER ─── */}
-      <header className="sticky top-0 z-50 bg-white border-b border-[#3b9fe8]/20 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16 gap-4">
-          <div className="flex items-center gap-2.5 shrink-0">
-            <div className="w-9 h-9 rounded-lg flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #1a3a6b 0%, #1e5fad 50%, #3b9fe8 100%)' }}>
-              <Icon name="GraduationCap" size={20} className="text-white" />
-            </div>
-            <span className="font-montserrat font-extrabold text-[#1a3a6b] text-lg leading-tight hidden sm:block">
-              Академ<span className="text-[#f5761a]">Сеть</span>
-            </span>
-          </div>
+    <div className="min-h-screen bg-white" style={{ fontFamily: "'PT Sans', Roboto, sans-serif", color: "var(--madi-text)" }}>
 
-          <div className="flex-1 max-w-md relative">
-            <Icon name="Search" size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Поиск по навыкам, специальностям, людям..."
-              className="pl-9 h-9 text-sm bg-[#f4f6fa] border-[#3b9fe8]/30 focus:border-[#3b9fe8]"
-              value={searchValue}
-              onChange={e => setSearchValue(e.target.value)}
-            />
-          </div>
-
-          <nav className="hidden lg:flex items-center gap-1">
-            {NAV_LINKS.map(link => (
-              <button
-                key={link.label}
-                onClick={() => setActiveNav(link.label)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                  activeNav === link.label
-                    ? "bg-[#e8f4fd] text-[#1e5fad]"
-                    : "text-foreground/70 hover:text-[#1a3a6b] hover:bg-[#e8f4fd]/60"
-                }`}
-              >
-                <Icon name={link.icon} size={15} />
-                {link.label}
-              </button>
-            ))}
-          </nav>
-
-          <div className="flex items-center gap-2 shrink-0">
-            <button className="relative p-2 rounded-full hover:bg-[#e8f4fd] transition-colors">
-              <Icon name="Bell" size={18} className="text-[#1a3a6b]" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-[#f5761a] rounded-full"></span>
+      {/* ══ TOP BAR ══ */}
+      <div style={{ background: "var(--madi-blue-deeper)" }} className="hidden md:block">
+        <div className="max-w-screen-xl mx-auto px-4 flex items-center justify-between h-8 text-xs text-white/60">
+          <span>Социальная платформа академического сообщества</span>
+          <div className="flex items-center gap-4">
+            <button className="hover:text-white transition-colors flex items-center gap-1">
+              <Icon name="Search" size={12} /> Поиск
             </button>
-            <div className="w-8 h-8 rounded-full flex items-center justify-center cursor-pointer" style={{ background: 'linear-gradient(135deg, #1a3a6b 0%, #3b9fe8 100%)' }}>
-              <span className="text-white text-xs font-bold">ВП</span>
-            </div>
-            <button className="lg:hidden p-2" onClick={() => setMobileMenuOpen(!mobileMenuOpen)}>
-              <Icon name="Menu" size={20} className="text-[#1a3a6b]" />
+            <button className="hover:text-white transition-colors flex items-center gap-1">
+              <Icon name="LogIn" size={12} /> Войти
+            </button>
+            <button className="hover:text-white transition-colors flex items-center gap-1">
+              <Icon name="UserPlus" size={12} /> Регистрация
             </button>
           </div>
         </div>
+      </div>
 
-        {mobileMenuOpen && (
-          <div className="lg:hidden bg-white border-t border-[#3b9fe8]/20 px-4 py-2 flex flex-wrap gap-1 animate-fade-in">
+      {/* ══ LOGO BAR ══ */}
+      <div className="bg-white border-b" style={{ borderColor: "var(--madi-line)" }}>
+        <div className="max-w-screen-xl mx-auto px-4 flex items-center justify-between h-16 gap-4">
+          {/* Logo */}
+          <div className="flex items-center gap-3 shrink-0">
+            <div
+              className="w-10 h-10 rounded flex items-center justify-center text-white font-bold text-lg"
+              style={{ background: "var(--madi-blue)" }}
+            >
+              А
+            </div>
+            <div>
+              <div className="font-bold text-base leading-tight" style={{ color: "var(--madi-text)" }}>
+                АкадемСеть
+              </div>
+              <div className="text-xs leading-tight" style={{ color: "var(--madi-muted)" }}>
+                Социальная платформа вуза
+              </div>
+            </div>
+          </div>
+
+          {/* Search desktop */}
+          <div className="hidden md:flex flex-1 max-w-md items-center border rounded" style={{ borderColor: "var(--madi-line)" }}>
+            <input
+              className="flex-1 px-3 py-2 text-sm outline-none bg-transparent"
+              placeholder="Поиск людей, групп, событий..."
+              style={{ color: "var(--madi-text)" }}
+            />
+            <button
+              className="px-3 py-2 text-white text-sm flex items-center gap-1 rounded-r"
+              style={{ background: "var(--madi-orange)" }}
+            >
+              <Icon name="Search" size={14} />
+            </button>
+          </div>
+
+          {/* CTA */}
+          <div className="flex items-center gap-2 shrink-0">
+            <button
+              className="btn-madi hidden sm:flex"
+              style={{ background: "var(--madi-blue)" }}
+            >
+              <Icon name="LogIn" size={14} /> Войти
+            </button>
+            <button
+              className="btn-madi btn-madi-orange"
+            >
+              <Icon name="UserPlus" size={14} /> Регистрация
+            </button>
+            <button className="md:hidden p-2" onClick={() => setMobileOpen(!mobileOpen)}>
+              <Icon name="Menu" size={22} style={{ color: "var(--madi-blue)" }} />
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* ══ MAIN NAV ══ */}
+      <nav style={{ background: "var(--madi-blue)" }}>
+        <div className="max-w-screen-xl mx-auto px-4 hidden md:flex h-11 items-stretch">
+          {NAV_LINKS.map(link => (
+            <button
+              key={link}
+              onClick={() => setActiveNav(link)}
+              className={`madi-nav-item ${activeNav === link ? "active" : ""}`}
+            >
+              {link}
+            </button>
+          ))}
+          {/* Уведомления */}
+          <div className="ml-auto flex items-center gap-1 pr-0">
+            <button className="madi-nav-item relative">
+              <Icon name="Bell" size={15} />
+              <span
+                className="absolute top-2 right-1.5 w-2 h-2 rounded-full border-2"
+                style={{ background: "var(--madi-orange)", borderColor: "var(--madi-blue)" }}
+              />
+            </button>
+            <button className="madi-nav-item">
+              <Icon name="MessageCircle" size={15} />
+            </button>
+            <div
+              className="ml-2 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white cursor-pointer"
+              style={{ background: "var(--madi-orange)" }}
+            >
+              ВП
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile nav */}
+        {mobileOpen && (
+          <div className="md:hidden px-4 pb-3 pt-1 flex flex-col gap-1">
             {NAV_LINKS.map(link => (
               <button
-                key={link.label}
-                onClick={() => { setActiveNav(link.label); setMobileMenuOpen(false); }}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
-                  activeNav === link.label ? "bg-[#e8f4fd] text-[#1e5fad]" : "text-foreground/70 hover:text-[#1a3a6b]"
-                }`}
+                key={link}
+                onClick={() => { setActiveNav(link); setMobileOpen(false); }}
+                className="text-left text-sm text-white/80 hover:text-white py-1.5 border-b border-white/10"
               >
-                <Icon name={link.icon} size={14} />
-                {link.label}
+                {link}
               </button>
             ))}
           </div>
         )}
-      </header>
+      </nav>
 
-      {/* ─── HERO ─── */}
-      <section className="relative overflow-hidden" style={{ background: 'linear-gradient(135deg, #1a3a6b 0%, #1e5fad 55%, #3b9fe8 100%)' }}>
-        <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
-        <div className="absolute -top-20 -right-20 w-96 h-96 rounded-full opacity-10 blur-3xl bg-white" />
-        <div className="absolute bottom-0 left-1/3 w-64 h-64 rounded-full blur-2xl" style={{ background: 'rgba(245,118,26,0.15)' }} />
+      {/* ══ TICKER ══ */}
+      <div
+        className="ticker-wrap overflow-hidden py-1.5 border-b"
+        style={{ background: "var(--madi-gray)", borderColor: "var(--madi-line)" }}
+      >
+        <div className="ticker-inner text-xs" style={{ color: "var(--madi-muted)" }}>
+          {[...TICKER_ITEMS, ...TICKER_ITEMS].map((item, i) => (
+            <span key={i} className="flex items-center gap-1.5 shrink-0 cursor-pointer hover:text-[--madi-orange]">
+              <span
+                className="w-1.5 h-1.5 rounded-full shrink-0"
+                style={{ background: "var(--madi-orange)" }}
+              />
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 py-12 md:py-16 grid md:grid-cols-2 gap-8 items-center">
-          <div>
-            <div className="inline-flex items-center gap-1.5 bg-white/15 border border-white/25 text-white text-xs font-medium px-3 py-1 rounded-full mb-4">
-              🎓 Академическое сообщество
+      {/* ══ HERO ══ */}
+      <section className="relative overflow-hidden" style={{ minHeight: 360 }}>
+        <img
+          src={IMG_HERO}
+          alt="Кампус"
+          className="absolute inset-0 w-full h-full object-cover"
+        />
+        <div
+          className="absolute inset-0"
+          style={{ background: "linear-gradient(90deg, rgba(6,58,98,0.88) 0%, rgba(6,58,98,0.60) 55%, rgba(6,58,98,0.10) 100%)" }}
+        />
+        <div className="relative max-w-screen-xl mx-auto px-4 py-14 md:py-20">
+          <div className="max-w-xl madi-animate">
+            <div
+              className="inline-flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded mb-4"
+              style={{ background: "var(--madi-orange)", color: "#fff" }}
+            >
+              <Icon name="GraduationCap" size={13} /> Академическое сообщество
             </div>
-            <h1 className="font-montserrat font-extrabold text-white text-3xl md:text-4xl xl:text-5xl leading-tight mb-4">
+            <h1 className="text-3xl md:text-4xl font-bold text-white leading-snug mb-4">
               Платформа для студентов,<br />
-              <span style={{ color: '#f5761a' }}>преподавателей</span> и выпускников
+              преподавателей и выпускников
             </h1>
-            <p className="text-white/80 text-base md:text-lg mb-6 max-w-lg">
+            <p className="text-white/80 text-base mb-6 max-w-md">
               Общайтесь, участвуйте в проектах, находите стажировки и развивайтесь вместе с академическим сообществом.
             </p>
             <div className="flex gap-3 flex-wrap">
-              <button className="px-6 h-11 rounded-lg font-semibold text-white text-sm shadow-lg transition-all hover:scale-105" style={{ background: 'linear-gradient(135deg, #f5761a 0%, #f99b3a 100%)' }}>
-                Присоединиться
+              <button className="btn-madi btn-madi-orange text-sm px-5 py-2.5">
+                Зарегистрироваться
               </button>
-              <button className="px-6 h-11 rounded-lg font-semibold text-white text-sm border border-white/30 bg-white/10 hover:bg-white/20 transition-colors backdrop-blur">
+              <button
+                className="btn-madi text-sm px-5 py-2.5"
+                style={{ background: "rgba(255,255,255,0.15)", border: "1.5px solid rgba(255,255,255,0.4)" }}
+              >
                 Узнать больше
               </button>
             </div>
           </div>
-          <div className="hidden md:block">
-            <div className="relative">
-              <div className="absolute -inset-4 rounded-3xl blur-2xl opacity-40" style={{ background: 'rgba(245,118,26,0.3)' }} />
-              <img
-                src={HERO_IMAGE}
-                alt="Академическая сеть"
-                className="relative rounded-2xl shadow-2xl w-full object-cover aspect-video border border-white/20"
-              />
-              <div className="absolute -bottom-4 -left-4 bg-white rounded-xl shadow-xl px-4 py-3 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: '#e8f4fd' }}>
-                  <Icon name="Users" size={20} className="text-[#3b9fe8]" />
-                </div>
-                <div>
-                  <div className="font-montserrat font-bold text-[#1a3a6b] text-sm">16 000+</div>
-                  <div className="text-xs text-muted-foreground">участников</div>
-                </div>
-              </div>
-              <div className="absolute -top-4 -right-4 bg-white rounded-xl shadow-xl px-4 py-3 flex items-center gap-3">
-                <div className="w-10 h-10 rounded-lg flex items-center justify-center" style={{ background: '#fff3ea' }}>
-                  <Icon name="CalendarDays" size={20} className="text-[#f5761a]" />
-                </div>
-                <div>
-                  <div className="font-montserrat font-bold text-[#1a3a6b] text-sm">48 событий</div>
-                  <div className="text-xs text-muted-foreground">в этом месяце</div>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
 
-        {/* Stats bar */}
-        <div className="bg-white border-b border-[#3b9fe8]/20 shadow-sm">
-          <div className="max-w-7xl mx-auto px-4 py-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+        {/* Stats strip */}
+        <div
+          className="relative"
+          style={{ background: "rgba(6,58,98,0.92)" }}
+        >
+          <div className="max-w-screen-xl mx-auto px-4 flex flex-wrap">
             {STATS.map((s, i) => (
-              <div key={s.label} className="flex items-center gap-3" style={{ animationDelay: `${i * 80}ms` }}>
-                <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style={{ background: '#e8f4fd' }}>
-                  <Icon name={s.icon} size={18} className="text-[#3b9fe8]" />
-                </div>
-                <div>
-                  <div className="font-montserrat font-bold text-[#1a3a6b] text-base leading-tight">{s.value}</div>
-                  <div className="text-xs text-muted-foreground">{s.label}</div>
-                </div>
+              <div
+                key={s.label}
+                className={`stat-item flex-1 min-w-[130px] py-3 px-4 flex flex-col items-center madi-animate madi-animate-d${i + 1}`}
+              >
+                <span className="text-2xl font-bold text-white">{s.value}</span>
+                <span className="text-xs mt-0.5" style={{ color: "rgba(255,255,255,0.65)" }}>{s.label}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ─── MAIN CONTENT ─── */}
-      <main className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-[1fr_320px] gap-8">
+      {/* ══ MAIN CONTENT ══ */}
+      <div className="max-w-screen-xl mx-auto px-4 py-6 grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-6">
 
-        {/* LEFT COLUMN */}
-        <div className="space-y-8">
+        {/* ── LEFT ── */}
+        <div className="space-y-7">
 
-          {/* FEED */}
+          {/* NEWS GRID */}
           <section>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-montserrat font-bold text-[#1a3a6b] text-xl flex items-center gap-2">
-                <Icon name="LayoutDashboard" size={20} className="text-[#3b9fe8]" />
-                Лента активности
-              </h2>
-              <button className="text-[#3b9fe8] text-xs hover:text-[#1e5fad] flex items-center gap-0.5 transition-colors">
-                Все посты <Icon name="ChevronRight" size={14} />
+            <div className="madi-section-title">
+              <span>Лента активности</span>
+              <button className="text-xs font-normal" style={{ color: "var(--madi-blue)" }}>
+                Все публикации →
               </button>
             </div>
 
-            <div className="bg-white rounded-2xl border border-[#3b9fe8]/20 p-4 mb-4 flex gap-3 items-center shadow-sm">
-              <div className="w-9 h-9 rounded-full flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg, #1a3a6b, #3b9fe8)' }}>
-                <span className="text-white text-xs font-bold">ВП</span>
+            {/* Quick post bar */}
+            <div
+              className="flex items-center gap-3 p-3 mb-4 border rounded"
+              style={{ background: "var(--madi-gray)", borderColor: "var(--madi-line)" }}
+            >
+              <div
+                className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0"
+                style={{ background: "var(--madi-blue)" }}
+              >
+                ВП
               </div>
-              <div className="flex-1 bg-[#f4f6fa] rounded-xl px-4 py-2.5 text-sm text-muted-foreground cursor-pointer hover:bg-[#e8f4fd]/50 transition-colors">
-                Поделитесь новостью или идеей...
+              <div
+                className="flex-1 bg-white border rounded px-3 py-2 text-sm cursor-pointer hover:border-[--madi-blue] transition-colors"
+                style={{ borderColor: "var(--madi-line)", color: "var(--madi-muted)" }}
+              >
+                Поделитесь новостью, идеей или материалом...
               </div>
-              <button className="px-4 h-9 rounded-lg text-sm font-semibold text-white shrink-0 transition-colors hover:opacity-90" style={{ background: '#1a3a6b' }}>
-                <span className="flex items-center gap-1"><Icon name="Send" size={14} /> Написать</span>
+              <button className="btn-madi text-xs px-3 py-2 shrink-0">
+                <Icon name="Send" size={13} /> Опубликовать
               </button>
             </div>
 
-            <div className="space-y-4">
-              {FEED.map((post, i) => (
+            {/* News list — featured + grid */}
+            <div className="grid md:grid-cols-2 gap-4">
+              {/* Featured */}
+              <div className="madi-news-card md:row-span-2 flex flex-col cursor-pointer madi-animate">
+                <div className="relative overflow-hidden" style={{ height: 200 }}>
+                  <img
+                    src={NEWS[0].img}
+                    alt={NEWS[0].title}
+                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                  />
+                  <div className="absolute top-3 left-3">
+                    <TagBadge type={NEWS[0].tagType} label={NEWS[0].tag} />
+                  </div>
+                </div>
+                <div className="p-4 flex flex-col flex-1">
+                  <p className="text-xs mb-2" style={{ color: "var(--madi-muted)" }}>{NEWS[0].date}</p>
+                  <h3 className="news-title font-bold text-base leading-snug mb-3 transition-colors" style={{ color: "var(--madi-text)" }}>
+                    {NEWS[0].title}
+                  </h3>
+                  <div className="mt-auto flex items-center gap-2 text-xs" style={{ color: "var(--madi-muted)" }}>
+                    <Icon name="Eye" size={12} /> {NEWS[0].views}
+                    <span className="ml-auto">
+                      <button className="btn-madi text-xs px-3 py-1.5">Подробнее</button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Small news items */}
+              {NEWS.slice(1, 5).map((item, i) => (
                 <div
                   key={i}
-                  className="bg-white rounded-2xl border border-[#3b9fe8]/20 p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-lg"
+                  className={`madi-news-card flex gap-3 p-3 madi-animate madi-animate-d${i + 1}`}
                 >
-                  <div className="flex items-start gap-3 mb-3">
-                    <Avatar className="w-10 h-10">
-                      <AvatarFallback className="text-white text-xs font-bold" style={{ background: 'linear-gradient(135deg, #1a3a6b, #3b9fe8)' }}>{post.avatar}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-semibold text-[#1a3a6b] text-sm">{post.name}</span>
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                          post.tag === "Вакансии"
-                            ? "bg-[#fff3ea] text-[#f5761a] border border-[#f5761a]/30"
-                            : "bg-[#e8f4fd] text-[#1e5fad] border border-[#3b9fe8]/30"
-                        }`}>
-                          {post.tag}
-                        </span>
-                      </div>
-                      <div className="text-xs text-muted-foreground mt-0.5">{post.role} · {post.time}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <TagBadge type={item.tagType} label={item.tag} />
+                      <span className="text-xs" style={{ color: "var(--madi-muted)" }}>{item.date}</span>
                     </div>
-                  </div>
-                  <p className="text-sm text-foreground/80 leading-relaxed mb-4">{post.text}</p>
-                  <div className="flex items-center gap-4 pt-3 border-t border-border">
-                    <button className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-[#f5761a] transition-colors">
-                      <Icon name="Heart" size={14} /> {post.likes}
-                    </button>
-                    <button className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-[#3b9fe8] transition-colors">
-                      <Icon name="MessageCircle" size={14} /> {post.comments}
-                    </button>
-                    <button className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-[#1a3a6b] transition-colors ml-auto">
-                      <Icon name="Share2" size={14} /> Поделиться
-                    </button>
+                    <p className="news-title text-sm font-semibold leading-snug transition-colors" style={{ color: "var(--madi-text)" }}>
+                      {item.title}
+                    </p>
+                    <p className="text-xs mt-1.5 flex items-center gap-1" style={{ color: "var(--madi-muted)" }}>
+                      <Icon name="Eye" size={11} /> {item.views}
+                    </p>
                   </div>
                 </div>
               ))}
@@ -340,31 +413,29 @@ export default function Index() {
 
           {/* GROUPS */}
           <section>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-montserrat font-bold text-[#1a3a6b] text-xl flex items-center gap-2">
-                <Icon name="Users" size={20} className="text-[#3b9fe8]" />
-                Группы и сообщества
-              </h2>
-              <button className="text-[#3b9fe8] text-xs hover:text-[#1e5fad] flex items-center gap-0.5 transition-colors">
-                Все группы <Icon name="ChevronRight" size={14} />
+            <div className="madi-section-title">
+              <span>Группы и сообщества</span>
+              <button className="text-xs font-normal" style={{ color: "var(--madi-blue)" }}>
+                Все группы →
               </button>
             </div>
-            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-3">
               {GROUPS.map((g, i) => (
                 <div
                   key={i}
-                  className="bg-white rounded-2xl border border-[#3b9fe8]/20 p-4 shadow-sm cursor-pointer transition-all hover:-translate-y-1 hover:shadow-lg"
+                  className={`madi-card p-4 cursor-pointer madi-animate madi-animate-d${(i % 4) + 1}`}
                 >
-                  <div className="text-3xl mb-2">{g.emoji}</div>
-                  <div className="font-semibold text-[#1a3a6b] text-sm mb-1 leading-tight">{g.name}</div>
-                  <div className="flex items-center justify-between mt-2">
-                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                      g.color === "badge-orange"
-                        ? "bg-[#fff3ea] text-[#f5761a] border border-[#f5761a]/30"
-                        : "bg-[#e8f4fd] text-[#1e5fad] border border-[#3b9fe8]/30"
-                    }`}>{g.tag}</span>
-                    <span className="text-xs text-muted-foreground flex items-center gap-1">
-                      <Icon name="Users" size={12} /> {g.members}
+                  <div
+                    className="w-8 h-8 rounded flex items-center justify-center mb-3"
+                    style={{ background: "var(--madi-gray)" }}
+                  >
+                    <Icon name="Users" size={16} style={{ color: "var(--madi-blue)" }} />
+                  </div>
+                  <p className="font-semibold text-sm leading-snug mb-2" style={{ color: "var(--madi-text)" }}>{g.name}</p>
+                  <div className="flex items-center justify-between">
+                    <TagBadge type={g.tag === "Специальность" ? "blue" : g.tag === "Проект" ? "orange" : "gray"} label={g.tag} />
+                    <span className="text-xs flex items-center gap-1" style={{ color: "var(--madi-muted)" }}>
+                      <Icon name="Users" size={11} /> {g.members}
                     </span>
                   </div>
                 </div>
@@ -374,175 +445,246 @@ export default function Index() {
 
           {/* VACANCIES */}
           <section>
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="font-montserrat font-bold text-[#1a3a6b] text-xl flex items-center gap-2">
-                <Icon name="Briefcase" size={20} className="text-[#f5761a]" />
-                Стажировки и вакансии
-              </h2>
-              <button className="text-[#f5761a] text-xs hover:text-orange-700 flex items-center gap-0.5 transition-colors">
-                Все вакансии <Icon name="ChevronRight" size={14} />
+            <div className="madi-section-title">
+              <span>Стажировки и вакансии</span>
+              <button className="text-xs font-normal" style={{ color: "var(--madi-blue)" }}>
+                Все вакансии →
               </button>
             </div>
-            <div className="space-y-3">
+            <div className="border rounded overflow-hidden" style={{ borderColor: "var(--madi-line)" }}>
+              {/* Table head */}
+              <div
+                className="hidden md:grid grid-cols-[2fr_1fr_1fr_1fr] text-xs font-semibold px-4 py-2.5"
+                style={{ background: "var(--madi-blue)", color: "#fff" }}
+              >
+                <span>Должность / компания</span>
+                <span>Тип</span>
+                <span>Зарплата</span>
+                <span>Навыки</span>
+              </div>
               {VACANCIES.map((v, i) => (
                 <div
                   key={i}
-                  className="bg-white rounded-2xl border border-[#3b9fe8]/20 p-4 shadow-sm flex items-center gap-4 transition-all hover:-translate-y-1 hover:shadow-lg"
+                  className="grid md:grid-cols-[2fr_1fr_1fr_1fr] gap-2 px-4 py-3 border-t text-sm hover:bg-[#f7fafd] cursor-pointer transition-colors madi-animate"
+                  style={{ borderColor: "var(--madi-line)", animationDelay: `${i * 60}ms` }}
                 >
-                  <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ background: 'linear-gradient(135deg, #f5761a 0%, #f99b3a 100%)' }}>
-                    <Icon name="Briefcase" size={20} className="text-white" />
+                  <div>
+                    <p className="font-semibold" style={{ color: "var(--madi-text)" }}>{v.title}</p>
+                    <p className="text-xs mt-0.5" style={{ color: "var(--madi-muted)" }}>{v.company}</p>
                   </div>
+                  <div className="flex items-center">
+                    <TagBadge type={v.type === "Стажировка" ? "orange" : "blue"} label={v.type} />
+                  </div>
+                  <div className="flex items-center font-semibold text-sm" style={{ color: "var(--madi-orange)" }}>
+                    {v.salary}
+                  </div>
+                  <div className="flex items-center gap-1 flex-wrap">
+                    {v.tags.map(t => (
+                      <TagBadge key={t} type="gray" label={t} />
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-3 text-center">
+              <button className="btn-madi btn-madi-outline text-xs px-5 py-2">
+                <Icon name="Briefcase" size={13} /> Смотреть все вакансии
+              </button>
+            </div>
+          </section>
+
+          {/* PEOPLE */}
+          <section>
+            <div className="madi-section-title">
+              <span>Участники платформы</span>
+              <button className="text-xs font-normal" style={{ color: "var(--madi-blue)" }}>
+                Расширенный поиск →
+              </button>
+            </div>
+            <div className="grid sm:grid-cols-2 gap-3">
+              {PEOPLE.map((p, i) => (
+                <div
+                  key={i}
+                  className={`madi-card flex items-start gap-3 p-4 cursor-pointer madi-animate madi-animate-d${(i % 4) + 1}`}
+                >
+                  <Avatar className="w-11 h-11 shrink-0">
+                    <AvatarFallback
+                      className="text-white text-sm font-bold"
+                      style={{ background: "var(--madi-blue)" }}
+                    >
+                      {p.avatar}
+                    </AvatarFallback>
+                  </Avatar>
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-[#1a3a6b] text-sm">{v.title}</div>
-                    <div className="text-xs text-muted-foreground mt-0.5">{v.company}</div>
-                    <div className="flex gap-1.5 mt-2 flex-wrap">
-                      {v.tags.map(t => (
-                        <span key={t} className="bg-[#e8f4fd] text-[#1e5fad] border border-[#3b9fe8]/30 text-xs px-2 py-0.5 rounded-full">{t}</span>
-                      ))}
+                    <p className="font-semibold text-sm" style={{ color: "var(--madi-text)" }}>{p.name}</p>
+                    <p className="text-xs mt-0.5 mb-2" style={{ color: "var(--madi-muted)" }}>{p.role}</p>
+                    <div className="flex flex-wrap gap-1">
+                      {p.skills.map(s => <TagBadge key={s} type="blue" label={s} />)}
                     </div>
                   </div>
-                  <div className="text-right shrink-0">
-                    <div className="text-[#f5761a] font-semibold text-sm">{v.salary}</div>
-                    <span className="bg-[#fff3ea] text-[#f5761a] border border-[#f5761a]/30 text-xs px-2 py-0.5 rounded-full mt-1 inline-block">{v.type}</span>
-                  </div>
+                  <button
+                    className="shrink-0 btn-madi text-xs px-2.5 py-1.5"
+                    style={{ background: "var(--madi-blue)" }}
+                  >
+                    <Icon name="UserPlus" size={12} />
+                  </button>
                 </div>
               ))}
             </div>
           </section>
         </div>
 
-        {/* RIGHT COLUMN */}
-        <aside className="space-y-6">
+        {/* ── RIGHT SIDEBAR ── */}
+        <aside className="space-y-5">
 
           {/* EVENTS */}
-          <div className="bg-white rounded-2xl border border-[#3b9fe8]/20 shadow-sm overflow-hidden">
-            <div className="px-5 py-4 border-b border-[#3b9fe8]/15 flex items-center justify-between">
-              <h3 className="font-montserrat font-bold text-[#1a3a6b] text-base flex items-center gap-2">
-                <Icon name="CalendarDays" size={17} className="text-[#3b9fe8]" />
-                Ближайшие события
-              </h3>
-              <button className="text-[#3b9fe8] text-xs hover:text-[#1e5fad] transition-colors">Календарь</button>
+          <div>
+            <div className="madi-section-title">
+              <span>Ближайшие события</span>
             </div>
-            <div className="divide-y divide-border">
+            <div className="space-y-2">
               {EVENTS.map((e, i) => (
-                <div key={i} className="px-5 py-3.5 hover:bg-[#e8f4fd]/30 transition-colors cursor-pointer">
-                  <div className="flex items-start gap-3">
-                    <div className={`w-8 h-8 ${e.color} rounded-lg flex items-center justify-center shrink-0 mt-0.5`}>
-                      <Icon name={e.icon} size={14} className="text-white" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium text-[#1a3a6b] text-sm leading-snug">{e.title}</div>
-                      <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                        <Icon name="Clock" size={11} /> {e.date} · {e.time}
-                      </div>
-                      <div className="flex items-center gap-1.5 mt-1">
-                        <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                          e.type === "Онлайн"
-                            ? "bg-[#e8f4fd] text-[#1e5fad] border border-[#3b9fe8]/30"
-                            : "bg-[#fff3ea] text-[#f5761a] border border-[#f5761a]/30"
-                        }`}>{e.type}</span>
-                        <span className="text-xs text-muted-foreground truncate">{e.place}</span>
-                      </div>
-                    </div>
+                <div
+                  key={i}
+                  className="flex gap-3 p-3 border cursor-pointer hover:bg-[#f7fafd] transition-colors madi-animate"
+                  style={{ borderColor: "var(--madi-line)", animationDelay: `${i * 60}ms` }}
+                >
+                  <div className="event-date-block">
+                    <div className="text-xl font-bold leading-none">{e.day}</div>
+                    <div className="text-xs mt-0.5 opacity-80">{e.month}</div>
                   </div>
-                </div>
-              ))}
-            </div>
-            <div className="px-5 py-3 border-t border-[#3b9fe8]/15">
-              <button className="w-full border border-[#3b9fe8]/40 text-[#1e5fad] hover:bg-[#e8f4fd] text-xs h-8 rounded-lg transition-colors flex items-center justify-center gap-1.5">
-                <Icon name="Calendar" size={13} /> Открыть полный календарь
-              </button>
-            </div>
-          </div>
-
-          {/* PEOPLE */}
-          <div className="bg-white rounded-2xl border border-[#3b9fe8]/20 shadow-sm overflow-hidden">
-            <div className="px-5 py-4 border-b border-[#3b9fe8]/15">
-              <h3 className="font-montserrat font-bold text-[#1a3a6b] text-base flex items-center gap-2">
-                <Icon name="UserSearch" size={17} className="text-[#3b9fe8]" />
-                Найти людей
-              </h3>
-            </div>
-            <div className="divide-y divide-border">
-              {PEOPLE.map((p, i) => (
-                <div key={i} className="px-5 py-3 hover:bg-[#e8f4fd]/30 transition-colors cursor-pointer flex items-center gap-3">
-                  <Avatar className="w-9 h-9">
-                    <AvatarFallback className="text-white text-xs font-bold" style={{ background: 'linear-gradient(135deg, #1a3a6b, #3b9fe8)' }}>{p.avatar}</AvatarFallback>
-                  </Avatar>
                   <div className="flex-1 min-w-0">
-                    <div className="font-medium text-[#1a3a6b] text-sm truncate">{p.name}</div>
-                    <div className="text-xs text-muted-foreground truncate">{p.role}</div>
-                    <div className="flex gap-1 mt-1 flex-wrap">
-                      {p.skills.map(s => (
-                        <span key={s} className="bg-[#e8f4fd] text-[#1e5fad] border border-[#3b9fe8]/30 text-xs px-1.5 py-0.5 rounded-full">{s}</span>
-                      ))}
+                    <p className="text-sm font-semibold leading-snug" style={{ color: "var(--madi-text)" }}>
+                      {e.title}
+                    </p>
+                    <p className="text-xs mt-1 flex items-center gap-1" style={{ color: "var(--madi-muted)" }}>
+                      <Icon name="MapPin" size={11} /> {e.place}
+                    </p>
+                    <div className="mt-1.5">
+                      <TagBadge
+                        type={e.type === "Офлайн" ? "blue" : e.type === "Онлайн" ? "orange" : "gray"}
+                        label={e.type}
+                      />
                     </div>
                   </div>
-                  <button className="w-7 h-7 rounded-full border border-[#3b9fe8]/40 flex items-center justify-center hover:bg-[#3b9fe8] hover:border-[#3b9fe8] hover:text-white transition-colors text-[#3b9fe8] shrink-0">
-                    <Icon name="UserPlus" size={13} />
-                  </button>
                 </div>
               ))}
             </div>
-            <div className="px-5 py-3 border-t border-[#3b9fe8]/15">
-              <button className="w-full border border-[#3b9fe8]/40 text-[#1e5fad] hover:bg-[#e8f4fd] text-xs h-8 rounded-lg transition-colors flex items-center justify-center gap-1.5">
-                <Icon name="Search" size={13} /> Расширенный поиск
+            <div className="mt-3">
+              <button className="btn-madi btn-madi-outline text-xs w-full justify-center py-2">
+                <Icon name="CalendarDays" size={13} /> Полный календарь
               </button>
             </div>
           </div>
 
-          {/* JOIN CARD */}
-          <div className="rounded-2xl p-5 relative overflow-hidden text-white" style={{ background: 'linear-gradient(135deg, #1a3a6b 0%, #1e5fad 60%, #3b9fe8 100%)' }}>
-            <div className="absolute -top-4 -right-4 w-24 h-24 bg-white/10 rounded-full" />
-            <div className="absolute -bottom-6 -left-6 w-32 h-32 rounded-full blur-xl" style={{ background: 'rgba(245,118,26,0.25)' }} />
-            <div className="relative">
-              <div className="text-3xl mb-2">🎓</div>
-              <h3 className="font-montserrat font-bold text-white text-base mb-1">Новый на платформе?</h3>
-              <p className="text-white/75 text-xs mb-4 leading-relaxed">
-                Зарегистрируйтесь и получите доступ ко всем возможностям академического сообщества
-              </p>
-              <button className="w-full h-9 rounded-lg text-sm font-semibold text-white shadow-lg transition-all hover:opacity-90" style={{ background: 'linear-gradient(135deg, #f5761a 0%, #f99b3a 100%)' }}>
-                Создать аккаунт
-              </button>
+          {/* QUICK LINKS */}
+          <div>
+            <div className="madi-section-title">
+              <span>Разделы платформы</span>
+            </div>
+            <div className="space-y-1">
+              {[
+                { icon: "LayoutDashboard", label: "Лента новостей", count: "124 поста" },
+                { icon: "Users",           label: "Группы",          count: "540 сообществ" },
+                { icon: "CalendarDays",    label: "Календарь",       count: "48 событий" },
+                { icon: "Briefcase",       label: "Вакансии",        count: "93 позиции" },
+                { icon: "Award",           label: "Выпускники",      count: "3 200+" },
+                { icon: "Info",            label: "О платформе",     count: "" },
+              ].map((item, i) => (
+                <button
+                  key={i}
+                  className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm hover:bg-[#f7fafd] transition-colors border-b text-left"
+                  style={{ borderColor: "var(--madi-line)", color: "var(--madi-text)" }}
+                >
+                  <Icon name={item.icon} size={15} style={{ color: "var(--madi-blue)", flexShrink: 0 }} />
+                  <span className="flex-1">{item.label}</span>
+                  {item.count && (
+                    <span className="text-xs" style={{ color: "var(--madi-muted)" }}>{item.count}</span>
+                  )}
+                  <Icon name="ChevronRight" size={13} style={{ color: "var(--madi-muted)", flexShrink: 0 }} />
+                </button>
+              ))}
             </div>
           </div>
+
+          {/* REGISTER BANNER */}
+          <div
+            className="p-4 relative overflow-hidden"
+            style={{ background: "var(--madi-blue-deeper)", borderRadius: 2 }}
+          >
+            <div
+              className="absolute -top-6 -right-6 w-24 h-24 rounded-full opacity-10"
+              style={{ background: "var(--madi-orange)" }}
+            />
+            <p className="text-sm font-bold text-white mb-1">Новый участник?</p>
+            <p className="text-xs text-white/65 mb-4 leading-relaxed">
+              Создайте профиль, чтобы общаться, участвовать в проектах и находить стажировки.
+            </p>
+            <button className="btn-madi btn-madi-orange w-full justify-center text-xs py-2.5">
+              <Icon name="UserPlus" size={14} /> Создать аккаунт
+            </button>
+          </div>
+
+          {/* POPULAR SKILLS */}
+          <div>
+            <div className="madi-section-title">
+              <span>Популярные навыки</span>
+            </div>
+            <div className="flex flex-wrap gap-1.5">
+              {["Python", "AutoCAD", "MATLAB", "React", "Excel", "GIS", "Machine Learning", "Civil 3D", "Agile", "SQL", "Figma", "Arduino"].map(s => (
+                <button
+                  key={s}
+                  className="madi-tag-blue cursor-pointer hover:bg-[#1071B3] hover:text-white transition-colors"
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+
         </aside>
-      </main>
+      </div>
 
-      {/* ─── FOOTER ─── */}
-      <footer className="mt-8" style={{ background: '#1a3a6b' }}>
-        <div className="max-w-7xl mx-auto px-4 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
+      {/* ══ FOOTER ══ */}
+      <footer style={{ background: "var(--madi-blue-deeper)", marginTop: "2rem" }}>
+        <div className="max-w-screen-xl mx-auto px-4 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
           <div className="col-span-2 md:col-span-1">
             <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 bg-white/15 rounded-lg flex items-center justify-center">
-                <Icon name="GraduationCap" size={18} className="text-white" />
-              </div>
-              <span className="font-montserrat font-bold text-white">АкадемСеть</span>
+              <div
+                className="w-8 h-8 rounded flex items-center justify-center text-white font-bold"
+                style={{ background: "var(--madi-blue)" }}
+              >А</div>
+              <span className="font-bold text-white">АкадемСеть</span>
             </div>
-            <p className="text-white/55 text-xs leading-relaxed">
-              Социальная платформа для академического сообщества: студентов, преподавателей и выпускников.
+            <p className="text-xs leading-relaxed" style={{ color: "rgba(255,255,255,0.5)" }}>
+              Социальная платформа для студентов, преподавателей и выпускников академического сообщества.
             </p>
           </div>
           {[
             { title: "Платформа", links: ["Лента", "Группы", "События", "Вакансии"] },
             { title: "Сообщество", links: ["Студенты", "Преподаватели", "Выпускники", "Проекты"] },
-            { title: "Поддержка", links: ["О платформе", "Правила", "Помощь", "Контакты"] },
+            { title: "Поддержка", links: ["О платформе", "Правила", "Помощь", "Обратная связь"] },
           ].map(col => (
             <div key={col.title}>
-              <h4 className="text-white font-semibold text-sm mb-3">{col.title}</h4>
-              <ul className="space-y-1.5">
+              <p className="text-white text-sm font-semibold mb-3">{col.title}</p>
+              <ul className="space-y-2">
                 {col.links.map(l => (
                   <li key={l}>
-                    <a href="#" className="text-white/50 text-xs hover:text-white transition-colors">{l}</a>
+                    <a href="#" className="text-xs hover:text-white transition-colors" style={{ color: "rgba(255,255,255,0.5)" }}>
+                      {l}
+                    </a>
                   </li>
                 ))}
               </ul>
             </div>
           ))}
         </div>
-        <div className="border-t border-white/10 px-4 py-3 max-w-7xl mx-auto flex items-center justify-between">
-          <span className="text-white/35 text-xs">© 2026 АкадемСеть</span>
-          <span className="text-white/35 text-xs">Все права защищены</span>
+        <div
+          className="border-t px-4 py-3 max-w-screen-xl mx-auto flex items-center justify-between text-xs"
+          style={{ borderColor: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.35)" }}
+        >
+          <span>© 2026 АкадемСеть. Все права защищены.</span>
+          <span>Политика конфиденциальности · Правила использования</span>
         </div>
       </footer>
     </div>
