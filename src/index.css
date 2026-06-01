@@ -5,88 +5,54 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 215 40% 12%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 215 40% 12%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 215 40% 12%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 215 80% 28%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 205 90% 94%;
+    --secondary-foreground: 215 80% 28%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 210 30% 96%;
+    --muted-foreground: 215 20% 50%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 24 95% 53%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 210 25% 88%;
+    --input: 210 25% 88%;
+    --ring: 215 80% 28%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    --sidebar-background: 0 0% 98%;
+    /* Brand colors */
+    --brand-blue: #1a3a6b;
+    --brand-blue-mid: #1e5fad;
+    --brand-sky: #3b9fe8;
+    --brand-sky-light: #e8f4fd;
+    --brand-orange: #f5761a;
+    --brand-orange-light: #fff3ea;
+    --brand-white: #ffffff;
+    --brand-gray: #f4f6fa;
+    --brand-text: #0e1f3b;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-background: 215 80% 26%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-primary: 24 95% 53%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 215 60% 35%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 215 60% 35%;
+    --sidebar-ring: 205 90% 70%;
   }
 }
 
@@ -97,5 +63,169 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: "Golos Text", sans-serif;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Montserrat", sans-serif;
+  }
+}
+
+@layer utilities {
+  .font-golos {
+    font-family: "Golos Text", sans-serif;
+  }
+  .font-montserrat {
+    font-family: "Montserrat", sans-serif;
+  }
+
+  .brand-gradient {
+    background: linear-gradient(
+      135deg,
+      var(--brand-blue) 0%,
+      var(--brand-blue-mid) 50%,
+      var(--brand-sky) 100%
+    );
+  }
+
+  .brand-gradient-orange {
+    background: linear-gradient(135deg, var(--brand-orange) 0%, #f99b3a 100%);
+  }
+
+  .text-brand-blue {
+    color: var(--brand-blue);
+  }
+  .text-brand-sky {
+    color: var(--brand-sky);
+  }
+  .text-brand-orange {
+    color: var(--brand-orange);
+  }
+  .bg-brand-gray {
+    background-color: var(--brand-gray);
+  }
+  .bg-brand-sky-light {
+    background-color: var(--brand-sky-light);
+  }
+  .bg-brand-orange-light {
+    background-color: var(--brand-orange-light);
+  }
+
+  .card-hover {
+    transition:
+      transform 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+  .card-hover:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(26, 58, 107, 0.12);
+  }
+
+  .nav-link {
+    position: relative;
+    transition: color 0.2s ease;
+  }
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--brand-orange);
+    transition: width 0.25s ease;
+  }
+  .nav-link:hover::after {
+    width: 100%;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease forwards;
+  }
+  .animate-slide-up {
+    animation: slideUp 0.5s ease forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .delay-100 {
+    animation-delay: 0.1s;
+    opacity: 0;
+  }
+  .delay-200 {
+    animation-delay: 0.2s;
+    opacity: 0;
+  }
+  .delay-300 {
+    animation-delay: 0.3s;
+    opacity: 0;
+  }
+  .delay-400 {
+    animation-delay: 0.4s;
+    opacity: 0;
+  }
+  .delay-500 {
+    animation-delay: 0.5s;
+    opacity: 0;
+  }
+
+  .bg-dots {
+    background-image: radial-gradient(
+      circle,
+      rgba(59, 159, 232, 0.15) 1px,
+      transparent 1px
+    );
+    background-size: 28px 28px;
+  }
+
+  .section-divider {
+    border-top: 2px solid var(--brand-sky-light);
+  }
+
+  .badge-blue {
+    background: var(--brand-sky-light);
+    color: var(--brand-blue-mid);
+    border: 1px solid rgba(59, 159, 232, 0.3);
+  }
+
+  .badge-orange {
+    background: var(--brand-orange-light);
+    color: var(--brand-orange);
+    border: 1px solid rgba(245, 118, 26, 0.3);
+  }
+
+  .avatar-ring {
+    ring: 2px solid var(--brand-sky);
+  }
+
+  .notification-dot {
+    background: var(--brand-orange);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
   }
 }
